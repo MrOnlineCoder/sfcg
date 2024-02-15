@@ -12,6 +12,8 @@
 
 #include <SFML/Graphics/Shader.hpp>
 
+#include <sfcg/GeometryCache.hpp>
+
 namespace sfcg
 {
     RenderTarget::RenderTarget() : m_vao(0)
@@ -58,6 +60,16 @@ namespace sfcg
             states.shader->setUniformMatrixArray(ShaderUniformLocations::ProjectionMatrix, m_view.getTransform().getMatrix(), 4);
         }
 
+        if (states.texture)
+        {
+            bindTexture(states.texture);
+        }
+        else
+        {
+            bindTexture(
+                &GeometryCache::getInstance().getWhitePixelTexture());
+        }
+
         if (states.vao)
         {
             glCheck(glBindVertexArray(states.vao));
@@ -66,8 +78,8 @@ namespace sfcg
         {
             vertexBuffer.bind();
             glCheck(glBindVertexArray(m_vao));
-            glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)0));
-            glCheck(glEnableVertexAttribArray(0));
+            GeometryCache::getInstance().configureVaoAttributesForVertices();
+            vertexBuffer.unbind();
         }
 
         drawPrimitives(vertexBuffer.getPrimitiveType(), firstVertex, vertexCount);
@@ -97,5 +109,17 @@ namespace sfcg
     void RenderTarget::setView(const sf::View &view)
     {
         m_view = view;
+    }
+
+    void RenderTarget::bindTexture(const sf::Texture *texture)
+    {
+        if (texture)
+        {
+            glCheck(glBindTexture(GL_TEXTURE_2D, texture->getNativeHandle()));
+        }
+        else
+        {
+            glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+        }
     }
 }

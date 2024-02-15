@@ -3,6 +3,8 @@
 
 #include <string>
 
+// #define SFCG_GL_DEBUG
+
 std::string extractFilenameForPath(const std::string &path)
 {
     return path.substr(path.find_last_of("\\/") + 1);
@@ -22,8 +24,15 @@ namespace sfcg
 
     void glCheckError(const char *file, unsigned int line, const char *expression)
     {
+
         // Get the last error
         GLenum errorCode = glGetError();
+        auto filename = extractFilenameForPath(std::string(file));
+
+#ifdef SFCG_GL_DEBUG
+        sf::err() << "GL Debug: Call " << expression << " in " << filename << "(" << line << ") "
+                  << " => " << errorCode << std::endl;
+#endif
 
         if (errorCode != GL_NO_ERROR)
         {
@@ -79,7 +88,7 @@ namespace sfcg
 
             // Log the error
             sf::err() << "An internal OpenGL call failed in "
-                      << extractFilenameForPath(fileString) << "(" << line << ")."
+                      << filename << "(" << line << ")."
                       << "\nExpression:\n   " << expression
                       << "\nError description:\n   " << error << "\n   " << description << "\n"
                       << std::endl;

@@ -115,11 +115,7 @@ namespace sfcg
 
             states.transform = outlineTransform;
 
-            states.shader->setUniform(ShaderUniformLocations::Color, sf::Glsl::Vec4(
-                                                                         getOutlineColor().r / 255.f,
-                                                                         getOutlineColor().g / 255.f,
-                                                                         getOutlineColor().b / 255.f,
-                                                                         getOutlineColor().a / 255.f));
+            states.shader->setUniform(ShaderUniformLocations::Color, getOutlineColor());
 
             // Draw the outline
             target.draw(*m_vertexBuffer, 0, m_vertexBuffer->getVertexCount(), states);
@@ -128,11 +124,7 @@ namespace sfcg
         // Draw the inside of the shape
         states.transform = getTransform() * scaleTransform;
 
-        states.shader->setUniform(ShaderUniformLocations::Color, sf::Glsl::Vec4(
-                                                                     getFillColor().r / 255.f,
-                                                                     getFillColor().g / 255.f,
-                                                                     getFillColor().b / 255.f,
-                                                                     getFillColor().a / 255.f));
+        states.shader->setUniform(ShaderUniformLocations::Color, getFillColor());
 
         target.draw(*m_vertexBuffer, 0, m_vertexBuffer->getVertexCount(), states);
     }

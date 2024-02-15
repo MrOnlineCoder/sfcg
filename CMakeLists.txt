@@ -22,6 +22,7 @@ set(SOURCES
     src/Shader.cpp
     src/VertexBuffer.cpp
     src/CircleShape.cpp
+    src/Sprite.cpp
 
     example/main.cpp
 )

@@ -34,6 +34,8 @@ namespace sfcg
         const sf::View &getView() const;
         void setView(const sf::View &view);
 
+        void bindTexture(const sf::Texture *texture);
+
     private:
         void drawPrimitives(sf::PrimitiveType type, std::size_t firstVertex, std::size_t vertexCount);
 

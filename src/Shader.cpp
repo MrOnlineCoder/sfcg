@@ -157,6 +157,20 @@ namespace sfcg
         }
     }
 
+    void Shader::setUniform(const std::string &name, const sf::Color &color)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform4f(location, (float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f));
+        }
+    }
+
     void Shader::bind() const
     {
         if (m_program)

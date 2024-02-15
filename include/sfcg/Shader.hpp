@@ -20,6 +20,7 @@ namespace sfcg
 
         void setUniform(const std::string &name, const sf::Glsl::Vec4 &vector);
         void setUniform(const std::string &name, const sf::Glsl::Mat3 &matrix);
+        void setUniform(const std::string &name, const sf::Color &color);
         void setUniformMatrixArray(const std::string &name, const float *scalarArray, std::size_t size);
 
         void bind() const;

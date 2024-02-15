@@ -4,6 +4,8 @@
 #include <sfcg/VertexBuffer.hpp>
 #include <sfcg/Shader.hpp>
 
+#include <SFML/Graphics/Texture.hpp>
+
 #include <unordered_map>
 
 namespace sfcg
@@ -22,8 +24,14 @@ namespace sfcg
 
         GLuint getUnitRectangleVao();
         GLuint getUnitCircleVao(int pointCount);
+        GLuint getSpriteVao();
 
         const Shader *getBaseShader();
+        const Shader *getSpriteShader();
+
+        void configureVaoAttributesForVertices();
+
+        const sf::Texture &getWhitePixelTexture();
 
     private:
         sfcg::VertexBuffer m_unitRectangleVertexBuffer;
@@ -32,8 +40,12 @@ namespace sfcg
         std::unordered_map<int, GLuint> m_unitCircleVaos;
 
         Shader m_baseShader;
+        Shader m_spriteShader;
+
+        sf::Texture m_whitePixelTexture;
 
         GLuint m_unitRectangleVao;
+        GLuint m_spriteVao;
 
         static GeometryCache *m_instance;
     };

@@ -11,6 +11,10 @@ static const char *BASE_VERTEX_SHADER_SOURCE = R"(
     #version 330 core
 
     layout (location = 0) in vec2 position;
+    layout (location = 1) in vec4 color;
+    layout (location = 2) in vec2 texCoord;
+
+    out vec2 frag_texCoord;
 
     uniform mat4 sfcg_modelViewMatrix;
     uniform mat4 sfcg_projectionMatrix;
@@ -18,6 +22,7 @@ static const char *BASE_VERTEX_SHADER_SOURCE = R"(
     void main()
     {
         gl_Position = sfcg_projectionMatrix * sfcg_modelViewMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
+        frag_texCoord = texCoord;
     }
 )";
 
@@ -26,7 +31,47 @@ static const char *BASE_FRAGMENT_SHADER_SOURCE = R"(
 
     layout (location = 0) out vec4 fragColor;
 
+    in vec2 frag_texCoord;
+
     uniform vec4 sfcg_color;
+
+    uniform sampler2D sfcg_texture;
+
+    void main()
+    {
+        fragColor = texture(sfcg_texture, frag_texCoord) * sfcg_color;
+    }
+)";
+
+static const char *DEFAULT_SPRITE_VERTEX_SHADER_SOURCE = R"(
+    #version 330 core
+
+    layout (location = 0) in vec2 position;
+    layout (location = 1) in vec4 color;
+    layout (location = 2) in vec2 texCoord;
+
+    out vec2 frag_texCoord;
+
+    uniform mat4 sfcg_modelViewMatrix;
+    uniform mat4 sfcg_projectionMatrix;
+
+    void main()
+    {
+        gl_Position = sfcg_projectionMatrix * sfcg_modelViewMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
+        frag_texCoord = texCoord;
+    }
+)";
+
+static const char *DEFAULT_SPRITE_FRAGMENT_SHADER_SOURCE = R"(
+    #version 330 core
+
+    layout (location = 0) out vec4 fragColor;
+
+    in vec2 frag_texCoord;
+
+    uniform vec4 sfcg_color;
+
+    uniform sampler2D texture;
 
     void main()
     {
@@ -47,9 +92,14 @@ namespace sfcg
 
         m_instance = this;
         m_unitRectangleVao = 0;
+        m_spriteVao = 0;
 
         m_unitCircleVertexBuffers.reserve(4);
         m_unitCircleVaos.reserve(4);
+
+        sf::Image whitePixel;
+        whitePixel.create(1, 1, sf::Color::White);
+        m_whitePixelTexture.loadFromImage(whitePixel);
     }
 
     GeometryCache::~GeometryCache()
@@ -108,8 +158,7 @@ namespace sfcg
         glCheck(glGenVertexArrays(1, &unitCircleVao));
         glCheck(glBindVertexArray(unitCircleVao));
         m_unitCircleVertexBuffers[pointCount].bind();
-        glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)0));
-        glCheck(glEnableVertexAttribArray(0));
+        configureVaoAttributesForVertices();
         glCheck(glBindVertexArray(0));
 
         m_unitCircleVaos.insert(std::make_pair(pointCount, unitCircleVao));
@@ -124,6 +173,7 @@ namespace sfcg
 
     const sfcg::VertexBuffer &GeometryCache::getUnitRectangleVertexBuffer()
     {
+        // Use cache if needed
         if (m_unitRectangleVertexBuffer.getNativeHandle())
         {
             return m_unitRectangleVertexBuffer;
@@ -147,8 +197,7 @@ namespace sfcg
 
         m_unitRectangleVertexBuffer.bind();
 
-        glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)0));
-        glCheck(glEnableVertexAttribArray(0));
+        configureVaoAttributesForVertices();
 
         glCheck(glBindVertexArray(0));
 
@@ -169,8 +218,56 @@ namespace sfcg
         return &m_baseShader;
     }
 
+    const Shader *GeometryCache::getSpriteShader()
+    {
+        if (m_spriteShader.getNativeHandle())
+        {
+            return &m_spriteShader;
+        }
+
+        m_spriteShader.loadFromMemory(
+            DEFAULT_SPRITE_VERTEX_SHADER_SOURCE,
+            DEFAULT_SPRITE_FRAGMENT_SHADER_SOURCE);
+
+        return &m_spriteShader;
+    }
+
+    void GeometryCache::configureVaoAttributesForVertices()
+    {
+        // Position
+        glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)0));
+        glCheck(glEnableVertexAttribArray(0));
+
+        // Color
+        glCheck(glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(sf::Vertex), (void *)sizeof(sf::Vector2f)));
+        glCheck(glEnableVertexAttribArray(1));
+
+        // Texture Coord
+        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)(sizeof(sf::Vector2f) + sizeof(sf::Color))));
+        glCheck(glEnableVertexAttribArray(2));
+    }
+
     GLuint GeometryCache::getUnitRectangleVao()
     {
         return m_unitRectangleVao;
+    }
+
+    GLuint GeometryCache::getSpriteVao()
+    {
+        if (!m_spriteVao)
+        {
+            glCheck(glGenVertexArrays(1, &m_spriteVao));
+            glCheck(glBindVertexArray(m_spriteVao));
+            m_unitRectangleVertexBuffer.bind();
+            configureVaoAttributesForVertices();
+            glCheck(glBindVertexArray(0));
+        }
+
+        return m_spriteVao;
+    }
+
+    const sf::Texture &GeometryCache::getWhitePixelTexture()
+    {
+        return m_whitePixelTexture;
     }
 } // namespace sfcg

@@ -1,6 +1,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
+#define SFCG_GL_DEBUG 1
+
 #include <sfcg/SFCG.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -69,12 +71,10 @@ int sfcgmain()
 
     sfcg::RenderTarget target;
 
-    sfcg::CircleShape circle;
-    circle.setRadius(50);
+    sfcg::CircleShape circle(50, 50);
     circle.setPosition(sf::Vector2f(300, 300));
     circle.setFillColor(sf::Color::Green);
-    circle.setOutlineColor(sf::Color::Magenta);
-    circle.setOutlineThickness(2.0f);
+    circle.setOrigin(25, 25);
 
     sfcg::RectangleShape shape(sf::Vector2f(100, 100));
     shape.setFillColor(sf::Color::Green);
@@ -82,6 +82,17 @@ int sfcgmain()
     shape.setOutlineThickness(4.0f);
     shape.setPosition(sf::Vector2f(150, 150));
     shape.setOrigin(sf::Vector2f(50, 50));
+
+    sf::Texture tex;
+
+    tex.loadFromFile("../example/texture.png");
+
+    sfcg::Sprite sprite(tex);
+    sprite.setPosition(0, 0);
+    sprite.setPosition(sf::Vector2f(650, 550));
+    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+
+    printf("Texture size: %d, %d\n", tex.getSize().x, tex.getSize().y);
 
     float rotation = 0;
     while (window.isOpen())
@@ -98,6 +109,8 @@ int sfcgmain()
                 {
                     shape.setSize(sf::Vector2f(200, 200));
                     shape.setOrigin(sf::Vector2f(100, 100));
+
+                    sprite.setTextureRect(sf::IntRect(32, 0, 32, 32));
                 }
 
                 if (event.key.code == sf::Keyboard::P)
@@ -112,6 +125,7 @@ int sfcgmain()
                 {
                     shape.setSize(sf::Vector2f(100, 100));
                     shape.setOrigin(sf::Vector2f(50, 50));
+                    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
                 }
 
                 if (event.key.code == sf::Keyboard::P)
@@ -131,6 +145,8 @@ int sfcgmain()
         target.draw(circle);
 
         target.draw(shape);
+
+        target.draw(sprite);
 
         rotation += 0.1;
 

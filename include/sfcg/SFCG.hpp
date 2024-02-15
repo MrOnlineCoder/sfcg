@@ -6,5 +6,6 @@
 #include <sfcg/RectangleShape.hpp>
 #include <sfcg/CircleShape.hpp>
 #include <sfcg/Shader.hpp>
+#include <sfcg/Sprite.hpp>
 
 #endif
