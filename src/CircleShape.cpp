@@ -12,9 +12,10 @@
 
 namespace sfcg
 {
-    CircleShape::CircleShape(float radius)
+    CircleShape::CircleShape(float radius, int pointCount)
+        : m_radius(radius), m_pointCount(pointCount)
     {
-        setRadius(radius);
+        update();
     }
 
     std::size_t CircleShape::getPointCount() const
@@ -35,26 +36,24 @@ namespace sfcg
         m_insideBounds = sf::FloatRect(0, 0, diameter, diameter);
         m_bounds = m_insideBounds;
 
-        m_vertexBuffer = const_cast<VertexBuffer *>(&GeometryCache::getInstance().getUnitCircleVertexBuffer(30));
-        m_shapeVao = GeometryCache::getInstance().getUnitCircleVao(30);
+        m_vertexBuffer = const_cast<VertexBuffer *>(&GeometryCache::getInstance().getUnitCircleVertexBuffer(m_pointCount));
+        m_shapeVao = GeometryCache::getInstance().getUnitCircleVao(m_pointCount);
+    }
+
+    void CircleShape::setPointCount(int newCount)
+    {
+        m_pointCount = newCount;
+        update();
     }
 
     sf::Vector2f CircleShape::getPoint(std::size_t index) const
     {
-        switch (index)
-        {
-        case 0:
-            return sf::Vector2f(0, 0); // top-left
-        case 1:
-            return sf::Vector2f(1, 0); // top-right
-        case 2:
-            return sf::Vector2f(1, 1); // bottom-right
-        case 3:
-            return sf::Vector2f(0, 1); // bottom-left
-        case 4:
-            return sf::Vector2f(0, 0); // top-left
-        default:
-            return sf::Vector2f(0, 0);
-        }
+        static const float pi = 3.141592654f;
+
+        float angle = static_cast<float>(index) * 2.f * pi / static_cast<float>(m_pointCount) - pi / 2.f;
+        float x = std::cos(angle) * m_radius;
+        float y = std::sin(angle) * m_radius;
+
+        return sf::Vector2f(m_radius + x, m_radius + y);
     }
 }

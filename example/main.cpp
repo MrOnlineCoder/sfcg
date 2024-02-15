@@ -73,6 +73,8 @@ int sfcgmain()
     circle.setRadius(50);
     circle.setPosition(sf::Vector2f(300, 300));
     circle.setFillColor(sf::Color::Green);
+    circle.setOutlineColor(sf::Color::Magenta);
+    circle.setOutlineThickness(2.0f);
 
     sfcg::RectangleShape shape(sf::Vector2f(100, 100));
     shape.setFillColor(sf::Color::Green);
@@ -94,8 +96,8 @@ int sfcgmain()
             {
                 if (event.key.code == sf::Keyboard::Space)
                 {
-                    // shape.setSize(sf::Vector2f(200, 200));
-                    // shape.setOrigin(sf::Vector2f(100, 100));
+                    shape.setSize(sf::Vector2f(200, 200));
+                    shape.setOrigin(sf::Vector2f(100, 100));
                 }
 
                 if (event.key.code == sf::Keyboard::P)
@@ -108,8 +110,8 @@ int sfcgmain()
             {
                 if (event.key.code == sf::Keyboard::Space)
                 {
-                    // shape.setSize(sf::Vector2f(100, 100));
-                    // shape.setOrigin(sf::Vector2f(50, 50));
+                    shape.setSize(sf::Vector2f(100, 100));
+                    shape.setOrigin(sf::Vector2f(50, 50));
                 }
 
                 if (event.key.code == sf::Keyboard::P)
@@ -120,8 +122,8 @@ int sfcgmain()
         }
 
         // Some dynamic animations
-        // shape.move(sf::Vector2f(0.1f, 0.1f));
-        // shape.setRotation(rotation);
+        shape.move(sf::Vector2f(0.1f, 0.1f));
+        shape.setRotation(rotation);
 
         // Actual rendering
         target.clear();
@@ -133,9 +135,6 @@ int sfcgmain()
         rotation += 0.1;
 
         window.display();
-
-        sf::sleep(sf::milliseconds(2000));
-        return 0;
     }
 
     sfcg::cleanup();

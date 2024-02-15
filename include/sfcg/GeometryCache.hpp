@@ -32,8 +32,8 @@ namespace sfcg
         std::unordered_map<int, GLuint> m_unitCircleVaos;
 
         Shader m_baseShader;
+
         GLuint m_unitRectangleVao;
-        GLuint m_unitCircleVao;
 
         static GeometryCache *m_instance;
     };

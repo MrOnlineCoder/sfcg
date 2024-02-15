@@ -47,7 +47,6 @@ namespace sfcg
 
         m_instance = this;
         m_unitRectangleVao = 0;
-        m_unitCircleVao = 0;
 
         m_unitCircleVertexBuffers.reserve(4);
         m_unitCircleVaos.reserve(4);
@@ -57,7 +56,13 @@ namespace sfcg
     {
         m_instance = nullptr;
         glCheck(glDeleteVertexArrays(1, &m_unitRectangleVao));
-        glCheck(glDeleteVertexArrays(1, &m_unitCircleVao));
+
+        for (auto &pair : m_unitCircleVaos)
+        {
+            glCheck(glDeleteVertexArrays(1, &pair.second));
+        }
+
+        m_unitCircleVaos.clear();
     }
 
     GeometryCache &GeometryCache::getInstance()
@@ -74,6 +79,7 @@ namespace sfcg
             return it->second;
         }
 
+        // Create the unit circle vertices (+2 for center and last point to close the circle)
         sf::Vertex vertices[pointCount + 2];
 
         vertices[0] = sf::Vertex(sf::Vector2f(0.f, 0.f));
@@ -88,6 +94,7 @@ namespace sfcg
             vertices[i + 1] = sf::Vertex(sf::Vector2f(x, y));
         }
 
+        // Last point always finishes the circle at this position
         vertices[pointCount + 1] = sf::Vertex(sf::Vector2f(0, -1));
 
         m_unitCircleVertexBuffers.insert(std::make_pair(pointCount, sfcg::VertexBuffer()));
@@ -128,16 +135,21 @@ namespace sfcg
             sf::Vertex(sf::Vector2f(1.0f, 1.0f)),
             sf::Vertex(sf::Vector2f(0.0f, 1.0f))};
 
-        m_unitRectangleVertexBuffer.setPrimitiveType(sf::PrimitiveType::TrianglesStrip);
+        // Create VBO for unit rectangle and fill it
+        m_unitRectangleVertexBuffer.setPrimitiveType(sf::PrimitiveType::TrianglesFan);
         m_unitRectangleVertexBuffer.setUsage(sfcg::VertexBuffer::Usage::Static);
         m_unitRectangleVertexBuffer.create(4);
         m_unitRectangleVertexBuffer.update(vertices);
 
+        // The VAO
         glCheck(glGenVertexArrays(1, &m_unitRectangleVao));
         glCheck(glBindVertexArray(m_unitRectangleVao));
+
         m_unitRectangleVertexBuffer.bind();
+
         glCheck(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(sf::Vertex), (void *)0));
         glCheck(glEnableVertexAttribArray(0));
+
         glCheck(glBindVertexArray(0));
 
         return m_unitRectangleVertexBuffer;

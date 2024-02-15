@@ -105,8 +105,6 @@ namespace sfcg
 
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_buffer));
 
-        glDumpBoundObjects();
-
         if (vertexCount >= m_size)
         {
             glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), 0, bufferUsageToGlEnum(m_usage)));
@@ -114,13 +112,9 @@ namespace sfcg
             m_size = vertexCount;
         }
 
-        glDumpBoundObjects();
-
         glCheck(glBufferSubData(GL_ARRAY_BUFFER, static_cast<GLintptr>(sizeof(sf::Vertex) * offset), static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), (void *)vertices));
 
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
-        glDumpBoundObjects();
 
         return true;
     }
@@ -151,7 +145,7 @@ namespace sfcg
 
     void VertexBuffer::bind() const
     {
-        glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_buffer || 0));
+        glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_buffer));
     }
     void VertexBuffer::unbind() const
     {
