@@ -33,6 +33,8 @@ namespace sfcg
     void RectangleShape::update()
     {
         m_sizeScale = sf::Vector2f(m_size.x, m_size.y);
+        m_insideBounds = sf::FloatRect(0, 0, m_size.x, m_size.y);
+        m_bounds = m_insideBounds;
     }
 
     sf::Vector2f RectangleShape::getPoint(std::size_t index) const

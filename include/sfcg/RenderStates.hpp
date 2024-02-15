@@ -20,6 +20,7 @@ namespace sfcg
         sf::Transform transform;
         GLuint vao;
         Shader *shader;
+        sf::Transform scaleTransform;
 
         static const RenderStates Default;
     };

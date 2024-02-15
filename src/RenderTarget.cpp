@@ -53,6 +53,7 @@ namespace sfcg
         if (states.shader != nullptr)
         {
             states.shader->bind();
+            // states.shader->setUniformMatrixArray(ShaderUniformLocations::ScaleMatrix, scl.getMatrix(), 4);
             states.shader->setUniformMatrixArray(ShaderUniformLocations::ModelMatrix, states.transform.getMatrix(), 4);
             states.shader->setUniformMatrixArray(ShaderUniformLocations::ProjectionMatrix, m_view.getTransform().getMatrix(), 4);
         }

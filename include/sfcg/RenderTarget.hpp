@@ -14,8 +14,8 @@ namespace sfcg
 
     namespace ShaderUniformLocations
     {
-        const static char *FillColor = "sfcg_fillColor";
-        const static char *OutlineColor = "sfcg_outlineColor";
+        const static char *Color = "sfcg_color";
+        const static char *ScaleMatrix = "sfcg_scaleMatrix";
         const static char *ModelMatrix = "sfcg_modelViewMatrix";
         const static char *ProjectionMatrix = "sfcg_projectionMatrix";
     };

@@ -24,11 +24,11 @@ static const char *BASE_FRAGMENT_SHADER_SOURCE = R"(
 
     layout (location = 0) out vec4 fragColor;
 
-    uniform vec4 sfcg_fillColor;
+    uniform vec4 sfcg_color;
 
     void main()
     {
-        fragColor = sfcg_fillColor;
+        fragColor = sfcg_color;
     }
 )";
 
