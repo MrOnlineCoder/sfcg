@@ -4,5 +4,7 @@
 #include <sfcg/Init.hpp>
 #include <sfcg/RenderTarget.hpp>
 #include <sfcg/RectangleShape.hpp>
+#include <sfcg/CircleShape.hpp>
+#include <sfcg/Shader.hpp>
 
 #endif

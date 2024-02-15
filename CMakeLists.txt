@@ -21,6 +21,7 @@ set(SOURCES
     src/GLCheck.cpp
     src/Shader.cpp
     src/VertexBuffer.cpp
+    src/CircleShape.cpp
 
     example/main.cpp
 )

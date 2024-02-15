@@ -3,8 +3,23 @@
 
 #include <string>
 
+std::string extractFilenameForPath(const std::string &path)
+{
+    return path.substr(path.find_last_of("\\/") + 1);
+}
+
 namespace sfcg
 {
+    void glDumpBoundObjectsFromFile(const char *file, unsigned int line)
+    {
+        GLint vbo = 0;
+        GLint vao = 0;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &vbo);
+        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vao);
+        sf::err() << "Dump for " << extractFilenameForPath(std::string(file)) << "(" << line << "):"
+                  << "Bound VBO: " << vbo << " | Bound VAO: " << vao << std::endl;
+    }
+
     void glCheckError(const char *file, unsigned int line, const char *expression)
     {
         // Get the last error
@@ -64,7 +79,7 @@ namespace sfcg
 
             // Log the error
             sf::err() << "An internal OpenGL call failed in "
-                      << fileString.substr(fileString.find_last_of("\\/") + 1) << "(" << line << ")."
+                      << extractFilenameForPath(fileString) << "(" << line << ")."
                       << "\nExpression:\n   " << expression
                       << "\nError description:\n   " << error << "\n   " << description << "\n"
                       << std::endl;

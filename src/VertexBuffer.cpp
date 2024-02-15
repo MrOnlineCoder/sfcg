@@ -6,6 +6,20 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/System/Err.hpp>
 #include <cstring>
+
+GLenum bufferUsageToGlEnum(sfcg::VertexBuffer::Usage usage)
+{
+    switch (usage)
+    {
+    case sfcg::VertexBuffer::Usage::Static:
+        return GL_STATIC_DRAW;
+    case sfcg::VertexBuffer::Usage::Dynamic:
+        return GL_DYNAMIC_DRAW;
+    default:
+        return GL_STREAM_DRAW;
+    }
+}
+
 namespace sfcg
 {
 
@@ -59,7 +73,7 @@ namespace sfcg
         }
 
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_buffer));
-        glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), 0, GL_STATIC_DRAW));
+        glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), NULL, bufferUsageToGlEnum(m_usage)));
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
         m_size = vertexCount;
@@ -91,18 +105,22 @@ namespace sfcg
 
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, m_buffer));
 
-        glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), (void *)vertices, GL_STATIC_DRAW));
+        glDumpBoundObjects();
 
         if (vertexCount >= m_size)
         {
-            glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), 0, GL_STATIC_DRAW));
+            glCheck(glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), 0, bufferUsageToGlEnum(m_usage)));
 
             m_size = vertexCount;
         }
 
-        glCheck(glBufferSubData(GL_ARRAY_BUFFER, static_cast<GLintptr>(sizeof(sf::Vertex) * offset), static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), vertices));
+        glDumpBoundObjects();
+
+        glCheck(glBufferSubData(GL_ARRAY_BUFFER, static_cast<GLintptr>(sizeof(sf::Vertex) * offset), static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexCount), (void *)vertices));
 
         glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+        glDumpBoundObjects();
 
         return true;
     }

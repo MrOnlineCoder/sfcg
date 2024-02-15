@@ -69,6 +69,11 @@ int sfcgmain()
 
     sfcg::RenderTarget target;
 
+    sfcg::CircleShape circle;
+    circle.setRadius(50);
+    circle.setPosition(sf::Vector2f(300, 300));
+    circle.setFillColor(sf::Color::Green);
+
     sfcg::RectangleShape shape(sf::Vector2f(100, 100));
     shape.setFillColor(sf::Color::Green);
     shape.setOutlineColor(sf::Color::Blue);
@@ -84,20 +89,53 @@ int sfcgmain()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    // shape.setSize(sf::Vector2f(200, 200));
+                    // shape.setOrigin(sf::Vector2f(100, 100));
+                }
+
+                if (event.key.code == sf::Keyboard::P)
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }
+            }
+
+            if (event.type == sf::Event::KeyReleased)
+            {
+                if (event.key.code == sf::Keyboard::Space)
+                {
+                    // shape.setSize(sf::Vector2f(100, 100));
+                    // shape.setOrigin(sf::Vector2f(50, 50));
+                }
+
+                if (event.key.code == sf::Keyboard::P)
+                {
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                }
+            }
         }
 
         // Some dynamic animations
-        shape.move(sf::Vector2f(0.1f, 0.1f));
-        shape.setRotation(rotation);
+        // shape.move(sf::Vector2f(0.1f, 0.1f));
+        // shape.setRotation(rotation);
 
         // Actual rendering
         target.clear();
+
+        target.draw(circle);
 
         target.draw(shape);
 
         rotation += 0.1;
 
         window.display();
+
+        sf::sleep(sf::milliseconds(2000));
+        return 0;
     }
 
     sfcg::cleanup();
