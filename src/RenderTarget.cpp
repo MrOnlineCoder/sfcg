@@ -12,7 +12,41 @@
 
 #include <SFML/Graphics/Shader.hpp>
 
+#include <SFML/Graphics/BlendMode.hpp>
+
 #include <sfcg/GeometryCache.hpp>
+
+#include <SFML/System/Err.hpp>
+
+sf::Uint32 factorToGlConstant(sf::BlendMode::Factor blendFactor)
+{
+    switch (blendFactor)
+    {
+    case sf::BlendMode::Zero:
+        return GL_ZERO;
+    case sf::BlendMode::One:
+        return GL_ONE;
+    case sf::BlendMode::SrcColor:
+        return GL_SRC_COLOR;
+    case sf::BlendMode::OneMinusSrcColor:
+        return GL_ONE_MINUS_SRC_COLOR;
+    case sf::BlendMode::DstColor:
+        return GL_DST_COLOR;
+    case sf::BlendMode::OneMinusDstColor:
+        return GL_ONE_MINUS_DST_COLOR;
+    case sf::BlendMode::SrcAlpha:
+        return GL_SRC_ALPHA;
+    case sf::BlendMode::OneMinusSrcAlpha:
+        return GL_ONE_MINUS_SRC_ALPHA;
+    case sf::BlendMode::DstAlpha:
+        return GL_DST_ALPHA;
+    case sf::BlendMode::OneMinusDstAlpha:
+        return GL_ONE_MINUS_DST_ALPHA;
+    }
+
+    sf::err() << "Invalid value for sf::BlendMode::Factor! Fallback to sf::BlendMode::Zero." << std::endl;
+    return GL_ZERO;
+}
 
 namespace sfcg
 {
@@ -22,6 +56,9 @@ namespace sfcg
         glCheck(glBindVertexArray(m_vao));
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_STENCIL_TEST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glViewport(0, 0, 800, 600);
 

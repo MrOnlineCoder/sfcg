@@ -94,6 +94,14 @@ int sfcgmain()
 
     printf("Texture size: %d, %d\n", tex.getSize().x, tex.getSize().y);
 
+    sf::Font fnt;
+    fnt.loadFromFile("../example/roboto.ttf");
+
+    sfcg::Text text("Hello World!", fnt, 32);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(100, 100);
+    text.setStyle(sf::Text::StrikeThrough | sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
+
     float rotation = 0;
     while (window.isOpen())
     {
@@ -147,6 +155,8 @@ int sfcgmain()
         target.draw(shape);
 
         target.draw(sprite);
+
+        target.draw(text);
 
         rotation += 0.1;
 

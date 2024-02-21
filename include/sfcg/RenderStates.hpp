@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/Transform.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/BlendMode.hpp>
 #include <sfcg/Shader.hpp>
 
 namespace sfcg
@@ -16,6 +17,9 @@ namespace sfcg
             shader = nullptr;
             vao = 0;
             texture = nullptr;
+            blendMode = sf::BlendMode(
+                sf::BlendMode::SrcAlpha, sf::BlendMode::OneMinusSrcAlpha, sf::BlendMode::Add,
+                sf::BlendMode::One, sf::BlendMode::OneMinusSrcAlpha, sf::BlendMode::Add);
         }
 
         sf::Transform transform;
@@ -23,6 +27,7 @@ namespace sfcg
         Shader *shader;
         sf::Transform scaleTransform;
         const sf::Texture *texture;
+        sf::BlendMode blendMode;
 
         static const RenderStates Default;
     };

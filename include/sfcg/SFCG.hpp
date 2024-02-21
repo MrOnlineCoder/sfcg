@@ -7,5 +7,6 @@
 #include <sfcg/CircleShape.hpp>
 #include <sfcg/Shader.hpp>
 #include <sfcg/Sprite.hpp>
+#include <sfcg/Text.hpp>
 
 #endif

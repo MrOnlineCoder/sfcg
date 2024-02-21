@@ -27,7 +27,7 @@ namespace sfcg
         GLuint getSpriteVao();
 
         const Shader *getBaseShader();
-        const Shader *getSpriteShader();
+        const Shader *getTextShader();
 
         void configureVaoAttributesForVertices();
 
@@ -40,12 +40,11 @@ namespace sfcg
         std::unordered_map<int, GLuint> m_unitCircleVaos;
 
         Shader m_baseShader;
-        Shader m_spriteShader;
+        Shader m_textShader;
 
         sf::Texture m_whitePixelTexture;
 
         GLuint m_unitRectangleVao;
-        GLuint m_spriteVao;
 
         static GeometryCache *m_instance;
     };

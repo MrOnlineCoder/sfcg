@@ -23,6 +23,7 @@ set(SOURCES
     src/VertexBuffer.cpp
     src/CircleShape.cpp
     src/Sprite.cpp
+    src/Text.cpp
 
     example/main.cpp
 )

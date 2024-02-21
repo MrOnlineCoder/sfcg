@@ -15,6 +15,7 @@ static const char *BASE_VERTEX_SHADER_SOURCE = R"(
     layout (location = 2) in vec2 texCoord;
 
     out vec2 frag_texCoord;
+    out vec4 frag_vertexColor;
 
     uniform mat4 sfcg_modelViewMatrix;
     uniform mat4 sfcg_projectionMatrix;
@@ -23,6 +24,7 @@ static const char *BASE_VERTEX_SHADER_SOURCE = R"(
     {
         gl_Position = sfcg_projectionMatrix * sfcg_modelViewMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
         frag_texCoord = texCoord;
+        frag_vertexColor = color;
     }
 )";
 
@@ -43,39 +45,22 @@ static const char *BASE_FRAGMENT_SHADER_SOURCE = R"(
     }
 )";
 
-static const char *DEFAULT_SPRITE_VERTEX_SHADER_SOURCE = R"(
-    #version 330 core
-
-    layout (location = 0) in vec2 position;
-    layout (location = 1) in vec4 color;
-    layout (location = 2) in vec2 texCoord;
-
-    out vec2 frag_texCoord;
-
-    uniform mat4 sfcg_modelViewMatrix;
-    uniform mat4 sfcg_projectionMatrix;
-
-    void main()
-    {
-        gl_Position = sfcg_projectionMatrix * sfcg_modelViewMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
-        frag_texCoord = texCoord;
-    }
-)";
-
-static const char *DEFAULT_SPRITE_FRAGMENT_SHADER_SOURCE = R"(
+static const char *TEXT_FRAGMENT_SHADER_SOURCE = R"(
     #version 330 core
 
     layout (location = 0) out vec4 fragColor;
 
     in vec2 frag_texCoord;
+    in vec4 frag_vertexColor;
 
     uniform vec4 sfcg_color;
 
-    uniform sampler2D texture;
+    uniform sampler2D sfcg_texture;
 
     void main()
     {
-        fragColor = sfcg_color;
+        vec4 sampled = texture(sfcg_texture, frag_texCoord);
+        fragColor = sampled * frag_vertexColor;
     }
 )";
 
@@ -92,7 +77,6 @@ namespace sfcg
 
         m_instance = this;
         m_unitRectangleVao = 0;
-        m_spriteVao = 0;
 
         m_unitCircleVertexBuffers.reserve(4);
         m_unitCircleVaos.reserve(4);
@@ -218,18 +202,18 @@ namespace sfcg
         return &m_baseShader;
     }
 
-    const Shader *GeometryCache::getSpriteShader()
+    const Shader *GeometryCache::getTextShader()
     {
-        if (m_spriteShader.getNativeHandle())
+        if (m_textShader.getNativeHandle())
         {
-            return &m_spriteShader;
+            return &m_textShader;
         }
 
-        m_spriteShader.loadFromMemory(
-            DEFAULT_SPRITE_VERTEX_SHADER_SOURCE,
-            DEFAULT_SPRITE_FRAGMENT_SHADER_SOURCE);
+        m_textShader.loadFromMemory(
+            BASE_VERTEX_SHADER_SOURCE,
+            TEXT_FRAGMENT_SHADER_SOURCE);
 
-        return &m_spriteShader;
+        return &m_textShader;
     }
 
     void GeometryCache::configureVaoAttributesForVertices()
@@ -250,20 +234,6 @@ namespace sfcg
     GLuint GeometryCache::getUnitRectangleVao()
     {
         return m_unitRectangleVao;
-    }
-
-    GLuint GeometryCache::getSpriteVao()
-    {
-        if (!m_spriteVao)
-        {
-            glCheck(glGenVertexArrays(1, &m_spriteVao));
-            glCheck(glBindVertexArray(m_spriteVao));
-            m_unitRectangleVertexBuffer.bind();
-            configureVaoAttributesForVertices();
-            glCheck(glBindVertexArray(0));
-        }
-
-        return m_spriteVao;
     }
 
     const sf::Texture &GeometryCache::getWhitePixelTexture()

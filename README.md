@@ -7,7 +7,7 @@ Very WIP.
 ## TODO:
 
 - [ ] `sf::Texture`
-- [ ] `sf::Sprite`
+- [✅] `sf::Sprite`
 - [ ] `sf::RenderTexture`
 - [🛠] `sf::RenderTarget`
 - [ ] `sf::RenderWindow`
