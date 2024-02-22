@@ -6,16 +6,16 @@ Very WIP.
 
 ## TODO:
 
-- [✅] `sf::Texture` (SFML reusable)
-- [✅] `sf::Sprite`
+- [x] `sf::Texture` (use SFML variant)
+- [x] `sf::Sprite -> sfcg::Sprite`
 - [ ] `sf::RenderTexture`
-- [🛠] `sf::RenderTarget`
+- [ ] `sf::RenderTarget`
 - [ ] `sf::RenderWindow`
-- [🛠] `sf::Shader` (needs more uniform setters)
-- [✅] `sf::Font` (unchanged)
-- [✅] `sf::Text`
+- [ ] `sf::Shader` (needs more uniform setters)
+- [x] `sf::Font` (use SFML variant)
+- [x] `sf::Text`
 - [ ] `sf::VertexArray` (TBD regarding the API)
-- [🛠] `sf::VertexBuffer` (missing copy constructor)
-- [✅] `sf::RectangleShape`
-- [✅] `sf::CircleShape`
+- [ ] `sf::VertexBuffer` (missing copy constructor)
+- [x] `sf::RectangleShape`
+- [x] `sf::CircleShape`
 - [ ] `sf::ConvexShape`
