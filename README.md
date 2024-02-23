@@ -19,7 +19,9 @@ See [example](example/main.cpp) for usage.
 
 ## Why?
 
-I wanted to make an educational 3D pet-project with modern (core) OpenGL using SFML, but unfortunately, as for now, SFML Graphics module uses legacy OpenGL API, which I also couldn't run on my MacOS with M1 chip. At the same time, being a big fan of SFML clean and elegant API, I didn't want to switch to another library or introduce another dependency to my project. Therefore, I decided to write a drop-in replacement for SFML Graphics module, which would use modern OpenGL API.
+I wanted to make an educational 3D pet-project with modern (core) OpenGL using SFML, used for drawing 2D UI and debugging stuff, but unfortunately, as for now, SFML Graphics module uses legacy OpenGL API, which I also couldn't run on my MacOS with M1 chip. At the same time, being a big fan of SFML clean and elegant API, I didn't want to switch to another library or introduce another dependency to my project. Therefore, I decided to write a drop-in replacement for SFML Graphics module, which would use modern OpenGL API.
+
+AFAIK, SFML does not plan to switch to modern OpenGL in upcoming release of 3.0.0, and high chances that we will not see SFML 4.0+ for another decade or so 😁. This project should not be regarded as contribution to main FML codebase, this is mostly personal-use low-quality code project 😁
 
 ## How to use
 
@@ -145,8 +147,11 @@ If you want to use your own shaders, you can modify the `sfcg::RenderStates` obj
 - [x] `sf::CircleShape -> sfcg::CircleShape`
 - [x] `sf::ConvexShape -> sfcg::ConvexShape`
 - [ ] Switching between different render targets
-- [ ] Fix CMake config, so the library can be distributed
+- [ ] Caching of render states/objects in RenderTarget
+- [ ] Fix CMake config, so the library can be distributed easily
 - [ ] Add in-code documentation with SFML style
+- [ ] Solve outlines issue (either fix the transformations or use vertex buffers)\
+- [ ] Solve context-safety for `sfcg::GeometryCache`
 
 ## Credits
 
