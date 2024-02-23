@@ -1,3 +1,2 @@
 cd build
-make
-./bin/SFMLCoreGraphics
+make && ./bin/sfcg

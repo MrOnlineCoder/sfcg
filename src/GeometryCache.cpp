@@ -110,7 +110,7 @@ namespace sfcg
 
         if (it != m_unitCircleVertexBuffers.end())
         {
-            return it->second;
+            return *it->second;
         }
 
         // Create the unit circle vertices (+2 for center and last point to close the circle)
@@ -131,23 +131,25 @@ namespace sfcg
         // Last point always finishes the circle at this position
         vertices[pointCount + 1] = sf::Vertex(sf::Vector2f(0, -1));
 
-        m_unitCircleVertexBuffers.insert(std::make_pair(pointCount, sfcg::VertexBuffer()));
-        m_unitCircleVertexBuffers[pointCount].setPrimitiveType(sf::PrimitiveType::TriangleFan);
-        m_unitCircleVertexBuffers[pointCount].setUsage(sfcg::VertexBuffer::Usage::Static);
-        m_unitCircleVertexBuffers[pointCount].create(pointCount + 2);
-        m_unitCircleVertexBuffers[pointCount].update(vertices);
+        sfcg::VertexBuffer *vertexBuffer = new sfcg::VertexBuffer();
+
+        m_unitCircleVertexBuffers.insert(std::make_pair(pointCount, vertexBuffer));
+        m_unitCircleVertexBuffers[pointCount]->setPrimitiveType(sf::PrimitiveType::TriangleFan);
+        m_unitCircleVertexBuffers[pointCount]->setUsage(sfcg::VertexBuffer::Usage::Static);
+        m_unitCircleVertexBuffers[pointCount]->create(pointCount + 2);
+        m_unitCircleVertexBuffers[pointCount]->update(vertices);
 
         GLuint unitCircleVao = 0;
 
         glCheck(glGenVertexArrays(1, &unitCircleVao));
         glCheck(glBindVertexArray(unitCircleVao));
-        m_unitCircleVertexBuffers[pointCount].bind();
+        m_unitCircleVertexBuffers[pointCount]->bind();
         configureVaoAttributesForVertices();
         glCheck(glBindVertexArray(0));
 
         m_unitCircleVaos.insert(std::make_pair(pointCount, unitCircleVao));
 
-        return m_unitCircleVertexBuffers[pointCount];
+        return *m_unitCircleVertexBuffers[pointCount];
     }
 
     GLuint GeometryCache::getUnitCircleVao(int pointCount)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(SFMLCoreGraphics LANGUAGES CXX)
+project(sfcg LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -30,21 +30,21 @@ set(SOURCES
     example/main.cpp
 )
 
-add_executable(SFMLCoreGraphics ${SOURCES})
+add_executable(sfcg ${SOURCES})
 
-target_link_libraries(SFMLCoreGraphics PRIVATE sfml-system sfml-window sfml-graphics)
-target_compile_features(SFMLCoreGraphics PRIVATE cxx_std_17)
+target_link_libraries(sfcg PRIVATE sfml-system sfml-window sfml-graphics)
+target_compile_features(sfcg PRIVATE cxx_std_17)
 
-target_include_directories(SFMLCoreGraphics PRIVATE ./include)
+target_include_directories(sfcg PRIVATE ./include)
 
-target_compile_definitions(SFMLCoreGraphics PRIVATE GL_SILENCE_DEPRECATION)
+target_compile_definitions(sfcg PRIVATE GL_SILENCE_DEPRECATION)
 
 if(WIN32)
     add_custom_command(
-        TARGET SFMLCoreGraphics
+        TARGET sfcg
         COMMENT "Copy OpenAL DLL"
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:CMakeSFMLProject>
+        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:sfcg>
         VERBATIM)
 endif()
 
-install(TARGETS SFMLCoreGraphics)
+install(TARGETS sfcg)

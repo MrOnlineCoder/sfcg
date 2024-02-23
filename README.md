@@ -135,16 +135,15 @@ If you want to use your own shaders, you can modify the `sfcg::RenderStates` obj
 - [x] `sf::Texture` (use SFML variant)
 - [x] `sf::Sprite -> sfcg::Sprite`
 - [ ] `sf::RenderTexture`
-- [x] `sf::RenderTarget`
-- [x] `sf::RenderWindow`
-- [x] `sf::Shader` (needs more uniform setters)
+- [x] `sf::RenderTarget -> sfcg::RenderTarget`
+- [x] `sf::RenderWindow -> sfcg::RenderWindow`
+- [x] `sf::Shader -> sfcg::Shader`
 - [x] `sf::Font` (use SFML variant)
-- [x] `sf::Text`
-- [ ] `sf::VertexArray` (TBD regarding the API)
-- [ ] `sf::VertexBuffer` (missing copy constructor)
-- [x] `sf::RectangleShape`
-- [x] `sf::CircleShape`
-- [x] `sf::ConvexShape`
+- [x] `sf::Text -> sfcg::Text`
+- [x] `sf::VertexBuffer -> sfcg::VertexBuffer`
+- [x] `sf::RectangleShape -> sfcg::RectangleShape`
+- [x] `sf::CircleShape -> sfcg::CircleShape`
+- [x] `sf::ConvexShape -> sfcg::ConvexShape`
 - [ ] Switching between different render targets
 - [ ] Fix CMake config, so the library can be distributed
 - [ ] Add in-code documentation with SFML style

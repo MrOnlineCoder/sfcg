@@ -10,7 +10,7 @@
 
 namespace sfcg
 {
-    class GeometryCache
+    class GeometryCache : public sf::GlResource, public sf::NonCopyable
     {
     public:
         GeometryCache();
@@ -36,7 +36,7 @@ namespace sfcg
     private:
         sfcg::VertexBuffer m_unitRectangleVertexBuffer;
 
-        std::unordered_map<int, sfcg::VertexBuffer> m_unitCircleVertexBuffers;
+        std::unordered_map<int, sfcg::VertexBuffer *> m_unitCircleVertexBuffers;
         std::unordered_map<int, GLuint> m_unitCircleVaos;
 
         Shader m_baseShader;

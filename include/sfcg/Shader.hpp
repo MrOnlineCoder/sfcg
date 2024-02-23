@@ -3,6 +3,7 @@
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/Glsl.hpp>
+#include <SFML/Window/GlResource.hpp>
 
 #include <sfcg/OpenGL.hpp>
 
@@ -10,7 +11,7 @@
 
 namespace sfcg
 {
-    class Shader : sf::NonCopyable
+    class Shader : sf::NonCopyable, sf::GlResource
     {
     public:
         Shader();

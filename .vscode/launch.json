@@ -10,7 +10,7 @@
       "type": "lldb",
       "request": "launch",
       "breakpointMode": "file",
-      "program": "${workspaceRoot}/build/bin/SFMLCoreGraphics"
+      "program": "${workspaceRoot}/build/bin/sfcg"
     }
   ]
 }

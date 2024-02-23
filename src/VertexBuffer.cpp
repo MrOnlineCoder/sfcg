@@ -5,6 +5,7 @@
 #include <sfcg/RenderTarget.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/System/Err.hpp>
+#include <SFML/Window/GlResource.hpp>
 #include <cstring>
 
 GLenum bufferUsageToGlEnum(sfcg::VertexBuffer::Usage usage)
@@ -57,6 +58,47 @@ namespace sfcg
         {
             glCheck(glDeleteBuffers(1, &m_buffer));
         }
+    }
+
+    VertexBuffer::VertexBuffer(const VertexBuffer &copy)
+    {
+        if (copy.m_buffer && copy.m_size)
+        {
+            if (!create(copy.m_size))
+            {
+                sf::err() << "Could not create vertex buffer for copying" << std::endl;
+                return;
+            }
+
+            if (!update(copy))
+                sf::err() << "Could not copy vertex buffer" << std::endl;
+        }
+    }
+
+    bool VertexBuffer::update(const VertexBuffer &vertexBuffer)
+    {
+        if (!m_buffer || !vertexBuffer.m_buffer)
+            return false;
+
+        sf::GlResource::TransientContextLock contextLock;
+
+        glCheck(glBindBuffer(GL_COPY_READ_BUFFER, vertexBuffer.m_buffer));
+        glCheck(glBindBuffer(GL_COPY_WRITE_BUFFER, m_buffer));
+
+        glCheck(glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, static_cast<GLsizeiptr>(sizeof(sf::Vertex) * vertexBuffer.m_size)));
+
+        glCheck(glBindBuffer(GL_COPY_WRITE_BUFFER, 0));
+        glCheck(glBindBuffer(GL_COPY_READ_BUFFER, 0));
+
+        return true;
+    }
+
+    void VertexBuffer::swap(VertexBuffer &right)
+    {
+        std::swap(m_size, right.m_size);
+        std::swap(m_buffer, right.m_buffer);
+        std::swap(m_primitiveType, right.m_primitiveType);
+        std::swap(m_usage, right.m_usage);
     }
 
     ////////////////////////////////////////////////////////////
@@ -127,15 +169,6 @@ namespace sfcg
         swap(temp);
 
         return *this;
-    }
-
-    ////////////////////////////////////////////////////////////
-    void VertexBuffer::swap(VertexBuffer &right)
-    {
-        std::swap(m_size, right.m_size);
-        std::swap(m_buffer, right.m_buffer);
-        std::swap(m_primitiveType, right.m_primitiveType);
-        std::swap(m_usage, right.m_usage);
     }
 
     unsigned int VertexBuffer::getNativeHandle() const

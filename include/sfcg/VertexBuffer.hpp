@@ -8,13 +8,15 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 
+#include <SFML/Window/GlResource.hpp>
+
 namespace sfcg
 {
     class RenderTarget;
     class Vertex;
     class RenderStates;
 
-    class VertexBuffer : public Drawable
+    class VertexBuffer : public Drawable, public sf::GlResource
     {
     public:
         enum Usage
@@ -31,14 +33,23 @@ namespace sfcg
 
         VertexBuffer(sf::PrimitiveType type, Usage usage);
 
-        ~VertexBuffer();
-        bool create(std::size_t vertexCount);
-
-        std::size_t getVertexCount() const;
-        bool update(const sf::Vertex *vertices);
-        bool update(const sf::Vertex *vertices, std::size_t vertexCount, unsigned int offset);
+        ////////////////////////////////////////////////////////////
+        /// \brief Copy constructor
+        ///
+        /// \param copy instance to copy
+        ///
+        ////////////////////////////////////////////////////////////
+        VertexBuffer(const VertexBuffer &copy);
         VertexBuffer &operator=(const VertexBuffer &right);
         void swap(VertexBuffer &right);
+        ~VertexBuffer();
+
+        bool create(std::size_t vertexCount);
+        bool update(const VertexBuffer &vertexBuffer);
+        bool update(const sf::Vertex *vertices);
+        bool update(const sf::Vertex *vertices, std::size_t vertexCount, unsigned int offset);
+
+        std::size_t getVertexCount() const;
         unsigned int getNativeHandle() const;
         void setPrimitiveType(sf::PrimitiveType type);
         sf::PrimitiveType getPrimitiveType() const;
