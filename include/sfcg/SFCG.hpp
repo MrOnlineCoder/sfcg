@@ -8,5 +8,7 @@
 #include <sfcg/Shader.hpp>
 #include <sfcg/Sprite.hpp>
 #include <sfcg/Text.hpp>
+#include <sfcg/RenderWindow.hpp>
+#include <sfcg/ConvexShape.hpp>
 
 #endif

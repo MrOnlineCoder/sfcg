@@ -128,4 +128,8 @@ namespace sfcg
 
         target.draw(*m_vertexBuffer, 0, m_vertexBuffer->getVertexCount(), states);
     }
+
+    void Shape::update()
+    {
+    }
 }

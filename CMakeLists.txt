@@ -24,6 +24,8 @@ set(SOURCES
     src/CircleShape.cpp
     src/Sprite.cpp
     src/Text.cpp
+    src/RenderWindow.cpp
+    src/ConvexShape.cpp
 
     example/main.cpp
 )

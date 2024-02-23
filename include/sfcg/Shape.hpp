@@ -31,7 +31,7 @@ namespace sfcg
     protected:
         Shape();
 
-        virtual void update() = 0;
+        virtual void update();
 
         // const Texture *m_texture;
         // IntRect m_textureRect;

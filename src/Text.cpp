@@ -86,7 +86,7 @@ namespace sfcg
     {
         m_string = string;
 
-        if (m_string.getSize() > 0 && string != m_string)
+        if (m_string.getSize() > 0)
         {
             update();
         }

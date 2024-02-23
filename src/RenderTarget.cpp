@@ -50,24 +50,30 @@ sf::Uint32 factorToGlConstant(sf::BlendMode::Factor blendFactor)
 
 namespace sfcg
 {
-    RenderTarget::RenderTarget() : m_vao(0)
+    RenderTarget::RenderTarget() : m_vao(0), m_defaultView(), m_view(m_defaultView)
     {
+    }
+
+    RenderTarget::~RenderTarget()
+    {
+        glCheck(glDeleteVertexArrays(1, &m_vao));
+    }
+
+    void RenderTarget::initialize()
+    {
+        m_defaultView = sf::View(sf::FloatRect(0, 0, getSize().x, getSize().y));
+        m_view = m_defaultView;
+
         glCheck(glGenVertexArrays(1, &m_vao));
         glCheck(glBindVertexArray(m_vao));
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_STENCIL_TEST);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glViewport(0, 0, 800, 600);
-
-        m_defaultView = sf::View(sf::FloatRect(0, 0, 800, 600));
-        m_view = m_defaultView;
+        resetGLStates();
     }
 
     void RenderTarget::clear(sf::Color color)
     {
+        bindTexture(nullptr);
+
         glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
         glCheck(glClear(GL_COLOR_BUFFER_BIT));
     }
@@ -92,7 +98,6 @@ namespace sfcg
         if (states.shader != nullptr)
         {
             states.shader->bind();
-            // states.shader->setUniformMatrixArray(ShaderUniformLocations::ScaleMatrix, scl.getMatrix(), 4);
             states.shader->setUniformMatrixArray(ShaderUniformLocations::ModelMatrix, states.transform.getMatrix(), 4);
             states.shader->setUniformMatrixArray(ShaderUniformLocations::ProjectionMatrix, m_view.getTransform().getMatrix(), 4);
         }
@@ -158,5 +163,66 @@ namespace sfcg
         {
             glCheck(glBindTexture(GL_TEXTURE_2D, 0));
         }
+    }
+
+    ////////////////////////////////////////////////////////////
+    sf::Vector2f RenderTarget::mapPixelToCoords(const sf::Vector2i &point, const sf::View &view) const
+    {
+        // First, convert from viewport coordinates to homogeneous coordinates
+        sf::Vector2f normalized;
+        sf::FloatRect viewport = sf::FloatRect(getViewport(view));
+        normalized.x = -1.f + 2.f * (static_cast<float>(point.x) - viewport.left) / viewport.width;
+        normalized.y = 1.f - 2.f * (static_cast<float>(point.y) - viewport.top) / viewport.height;
+
+        // Then transform by the inverse of the view matrix
+        return view.getInverseTransform().transformPoint(normalized);
+    }
+
+    ////////////////////////////////////////////////////////////
+    sf::Vector2i RenderTarget::mapCoordsToPixel(const sf::Vector2f &point) const
+    {
+        return mapCoordsToPixel(point, getView());
+    }
+
+    ////////////////////////////////////////////////////////////
+    sf::Vector2i RenderTarget::mapCoordsToPixel(const sf::Vector2f &point, const sf::View &view) const
+    {
+        // First, transform the point by the view matrix
+        sf::Vector2f normalized = view.getTransform().transformPoint(point);
+
+        // Then convert to viewport coordinates
+        sf::Vector2i pixel;
+        sf::FloatRect viewport = sf::FloatRect(getViewport(view));
+        pixel.x = static_cast<int>((normalized.x + 1.f) / 2.f * viewport.width + viewport.left);
+        pixel.y = static_cast<int>((-normalized.y + 1.f) / 2.f * viewport.height + viewport.top);
+
+        return pixel;
+    }
+
+    sf::IntRect RenderTarget::getViewport(const sf::View &view) const
+    {
+        float width = static_cast<float>(getSize().x);
+        float height = static_cast<float>(getSize().y);
+        const sf::FloatRect &viewport = view.getViewport();
+
+        return sf::IntRect(static_cast<int>(0.5f + width * viewport.left),
+                           static_cast<int>(0.5f + height * viewport.top),
+                           static_cast<int>(0.5f + width * viewport.width),
+                           static_cast<int>(0.5f + height * viewport.height));
+    }
+
+    bool RenderTarget::isSrgb() const
+    {
+        return false;
+    }
+
+    void RenderTarget::resetGLStates()
+    {
+        // Blending mode required for sf::Text rendering
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // No depth testing is needed
+        glDisable(GL_DEPTH_TEST);
     }
 }

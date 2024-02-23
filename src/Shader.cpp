@@ -199,4 +199,88 @@ namespace sfcg
     {
         return m_program;
     }
+
+    void Shader::setUniform(const std::string &name, const sf::Glsl::Mat4 &matrix)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniformMatrix4fv(location, 1, GL_FALSE, matrix.array));
+        }
+    }
+
+    void Shader::setUniform(const std::string &name, const sf::Glsl::Vec2 &vector)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform2f(location, vector.x, vector.y));
+        }
+    }
+
+    void Shader::setUniform(const std::string &name, const sf::Glsl::Vec3 &vector)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform3f(location, vector.x, vector.y, vector.z));
+        }
+    }
+
+    void Shader::setUniform(const std::string &name, float scalar)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform1f(location, scalar));
+        }
+    }
+
+    void Shader::setUniform(const std::string &name, int scalar)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform1i(location, scalar));
+        }
+    }
+
+    void Shader::setUniform(const std::string &name, bool value)
+    {
+        UniformContextSaver contextSaver(m_program);
+
+        auto location = glGetUniformLocation(
+            m_program,
+            name.c_str());
+
+        if (location != -1)
+        {
+            glCheck(glUniform1i(location, value));
+        }
+    }
 }

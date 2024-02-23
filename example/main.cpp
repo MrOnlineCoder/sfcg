@@ -7,75 +7,32 @@
 
 #include <SFML/Graphics.hpp>
 
-void printTransform(const sf::Transform &t)
+int main()
 {
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
-            printf("%f ", t.getMatrix()[i * 4 + j]);
-        }
-
-        printf("\n");
-    }
-}
-
-int sfmain()
-{
-    sf::RenderWindow wnd(sf::VideoMode(800, 600), "SFML OpenGL", sf::Style::Default);
-    wnd.setFramerateLimit(60);
-
-    sf::RectangleShape shape(sf::Vector2f(100, 100));
-    shape.setFillColor(sf::Color::Green);
-    shape.setOutlineColor(sf::Color::Blue);
-    shape.setOutlineThickness(2.0f);
-    shape.setPosition(sf::Vector2f(150, 150));
-    shape.setOrigin(sf::Vector2f(50, 50));
-
-    float rotation = 0;
-    while (wnd.isOpen())
-    {
-        sf::Event event;
-        while (wnd.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                wnd.close();
-        }
-
-        shape.setRotation(rotation);
-
-        // Actual rendering
-        wnd.clear();
-
-        wnd.draw(shape);
-
-        rotation += 1;
-
-        wnd.display();
-    }
-    return 0;
-}
-
-int sfcgmain()
-{
+    // Request modern OpenGL context
+    // 4.1 here is because MacOS now ships with it only
     sf::ContextSettings settings;
     settings.attributeFlags = sf::ContextSettings::Core;
     settings.majorVersion = 4;
     settings.minorVersion = 1;
-    sf::Window window(sf::VideoMode(800, 600), "Core SFML Graphics Test", sf::Style::Default, settings);
+    sfcg::RenderWindow window(sf::VideoMode(800, 600), "Core SFML Graphics Test", sf::Style::Default, settings);
     window.setFramerateLimit(60);
 
+    // Print the OpenGL version
     printf("OpenGL Version: %d, %d\n", window.getSettings().majorVersion, window.getSettings().minorVersion);
 
+    // This must be called before any other sfcg function
+    // It creates some internal shaders, VAOs and VBOs
+    // May be subject to change in future!
     sfcg::init();
 
-    sfcg::RenderTarget target;
-
+    // Let's make a circle
     sfcg::CircleShape circle(50, 50);
-    circle.setPosition(sf::Vector2f(300, 300));
+    circle.setPosition(sf::Vector2f(400, 300));
     circle.setFillColor(sf::Color::Green);
     circle.setOrigin(25, 25);
 
+    // A rectangle
     sfcg::RectangleShape shape(sf::Vector2f(100, 100));
     shape.setFillColor(sf::Color::Green);
     shape.setOutlineColor(sf::Color::Blue);
@@ -83,26 +40,48 @@ int sfcgmain()
     shape.setPosition(sf::Vector2f(150, 150));
     shape.setOrigin(sf::Vector2f(50, 50));
 
+    // sf::Texture works fine in this OpenGL profile
     sf::Texture tex;
-
     tex.loadFromFile("../example/texture.png");
 
+    // And some fancy sprites
     sfcg::Sprite sprite(tex);
     sprite.setPosition(0, 0);
-    sprite.setPosition(sf::Vector2f(650, 550));
+    sprite.setPosition(sf::Vector2f(100, 32));
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
 
-    printf("Texture size: %d, %d\n", tex.getSize().x, tex.getSize().y);
-
+    // sf::Font also works fine, it does not depend on much OpenGL aside from just textures
     sf::Font fnt;
     fnt.loadFromFile("../example/roboto.ttf");
 
+    // And some text
     sfcg::Text text("Hello World!", fnt, 32);
     text.setFillColor(sf::Color::White);
     text.setPosition(100, 100);
     text.setStyle(sf::Text::StrikeThrough | sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
 
+    sfcg::Text fpsText;
+    fpsText.setFont(fnt);
+    fpsText.setCharacterSize(16);
+    fpsText.setFillColor(sf::Color::White);
+    fpsText.setPosition(32, 32);
+
+    // We also support convex shapes
+    sfcg::ConvexShape hexagon(6);
+    hexagon.setPoint(0, sf::Vector2f(0, -1));
+    hexagon.setPoint(1, sf::Vector2f(0.866f, -0.5f));
+    hexagon.setPoint(2, sf::Vector2f(0.866f, 0.5f));
+    hexagon.setPoint(3, sf::Vector2f(0, 1));
+    hexagon.setPoint(4, sf::Vector2f(-0.866f, 0.5f));
+    hexagon.setPoint(5, sf::Vector2f(-0.866f, -0.5f));
+    hexagon.setFillColor(sf::Color::Magenta);
+    hexagon.setScale(sf::Vector2f(100, 100));
+    hexagon.setPosition(100, 500);
+
     float rotation = 0;
+
+    sf::Clock fpsClock;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -121,6 +100,7 @@ int sfcgmain()
                     sprite.setTextureRect(sf::IntRect(32, 0, 32, 32));
                 }
 
+                // Press P to switch to wireframe mode (just fancy debugging)
                 if (event.key.code == sf::Keyboard::P)
                 {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -144,39 +124,33 @@ int sfcgmain()
         }
 
         // Some dynamic animations
+        rotation += 0.1;
         shape.move(sf::Vector2f(0.1f, 0.1f));
         shape.setRotation(rotation);
 
+        // Show FPS
+        float fps = 1.0f / fpsClock.restart().asSeconds();
+
+        fpsText.setString("FPS: " + std::to_string((int)fps));
+
         // Actual rendering
-        target.clear();
+        window.clear();
 
-        target.draw(circle);
+        window.draw(circle);
 
-        target.draw(shape);
+        window.draw(shape);
 
-        target.draw(sprite);
+        window.draw(sprite);
 
-        target.draw(text);
+        window.draw(hexagon);
 
-        rotation += 0.1;
+        window.draw(text);
+
+        window.draw(fpsText);
 
         window.display();
     }
 
     sfcg::cleanup();
     return 0;
-}
-
-int main()
-{
-    bool sfml = false;
-
-    if (sfml)
-    {
-        return sfmain();
-    }
-    else
-    {
-        return sfcgmain();
-    }
 }
