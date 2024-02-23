@@ -19,7 +19,7 @@ namespace sfcg
         const static char *ProjectionMatrix = "sfcg_projectionMatrix";
     };
 
-    class RenderTarget
+    class RenderTarget : sf::NonCopyable
     {
     public:
         RenderTarget();
