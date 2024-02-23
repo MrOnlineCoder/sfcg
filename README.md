@@ -75,6 +75,61 @@ Long story short:
 
 ### ⚠️ This started as personal educational project, so no guarantees are given. Use at your own risk. ⚠️
 
+## Note on shaders
+
+Modern OpenGL pipeline requires a shader program to render anything. To simplify the API, there is a set of default shaders in `sfcg` which are created and applied under the hood. This allows using this library without any creation of shaders, as in original SFML API.
+
+`sfcg` comes with a default so-called _base_ shader, which is used for rendering all the shapes, sprites, which I guess should be fine for most of the cases. There is also separate fragment shader for text rendering.
+
+The vertex and fragment base shaders are defined in [GeometryCache.cpp](src/GeometryCache.cpp) as follows:
+
+```glsl
+#version 330 core
+
+layout (location = 0) in vec2 position;
+layout (location = 1) in vec4 color;
+layout (location = 2) in vec2 texCoord;
+
+out vec2 frag_texCoord;
+out vec4 frag_vertexColor;
+
+uniform mat4 sfcg_modelViewMatrix;
+uniform mat4 sfcg_projectionMatrix;
+
+void main()
+{
+    gl_Position = sfcg_projectionMatrix * sfcg_modelViewMatrix * vec4(position.x, position.y, 0.0f, 1.0f);
+    frag_texCoord = texCoord;
+    frag_vertexColor = color;
+}
+```
+
+```glsl
+#version 330 core
+
+layout (location = 0) out vec4 fragColor;
+
+in vec2 frag_texCoord;
+
+uniform vec4 sfcg_color;
+
+uniform sampler2D sfcg_texture;
+
+void main()
+{
+    fragColor = texture(sfcg_texture, frag_texCoord) * sfcg_color;
+}
+```
+
+As you may see, there a few uniforms which are automatically set by `sfcg`:
+
+- `sfcg_modelViewMatrix` - model-view matrix, usually it's equal to matrix of `sf::Transform` of currently drawn object
+- `sfcg_projectionMatrix` - projection matrix, usually it's equal to matrix of `sf::View` of currently used render target
+- `sfcg_color` - color of the object, usually the fill color of the shape or sprite
+- `sfcg_texture` - texture of the object. **To simplify shaders code, if there is NO texture bound, sfcg will bind internal texture consisting of single (1x1) white pixel before drawing.** This allows writing shaders which sample the texture, without checking if it's bound or not, which is tricky in OpenGL.
+
+If you want to use your own shaders, you can modify the `sfcg::RenderStates` object, passed to `draw()` methods, where you can use the above provided uniforms.
+
 ## TODO:
 
 - [x] `sf::Texture` (use SFML variant)
