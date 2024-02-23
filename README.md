@@ -8,12 +8,14 @@ Experimental, WIP, and probably broken.
 
 ![screenshot](example/screenshot.png)
 
-My aim is to have fully-working and documented replacement for SFML graphics, although it's still WIP. As for now, the following features are implemented:
+My aim is to have fully-working, API-compatible and documented replacement for SFML graphics, although it's still far from that. As for now, the following features are implemented:
 
 - Creation of render window, with given context settings
 - Drawing of rectangles, circles, and convex shapes
 - Sprites
 - Text rendering using `sf::Font`
+
+See [example](example/main.cpp) for usage.
 
 ## Why?
 
