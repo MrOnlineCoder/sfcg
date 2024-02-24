@@ -102,8 +102,8 @@ namespace sfcg
     {
         if (m_characterSize != size)
         {
-            update();
             m_characterSize = size;
+            update();
         }
     }
 

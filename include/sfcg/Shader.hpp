@@ -18,6 +18,7 @@ namespace sfcg
         ~Shader();
 
         void loadFromMemory(const std::string &vertexSource, const std::string &fragmentsSource);
+        void loadFromFile(const std::string &vertexPath, const std::string &fragmentPath);
 
         void setUniform(const std::string &name, float scalar);
         void setUniform(const std::string &name, int scalar);

@@ -2,6 +2,9 @@
 #include <sfcg/GLCheck.hpp>
 #include <SFML/System.hpp>
 
+#include <fstream>
+#include <sstream>
+
 namespace sfcg
 {
     class UniformContextSaver
@@ -128,6 +131,29 @@ namespace sfcg
             return;
 
         compileAndLink(vertexSource, fragmentsSource);
+    }
+
+    void Shader::loadFromFile(const std::string &vertexPath, const std::string &fragmentPath)
+    {
+        if (m_program)
+            return;
+
+        std::string vertexSource;
+        std::string fragmentSource;
+
+        std::ifstream vertexFile(vertexPath);
+        std::ifstream fragmentFile(fragmentPath);
+
+        std::stringstream vertexStream;
+        std::stringstream fragmentStream;
+
+        vertexStream << vertexFile.rdbuf();
+        fragmentStream << fragmentFile.rdbuf();
+
+        vertexSource = vertexStream.str();
+        fragmentSource = fragmentStream.str();
+
+        compileAndLink(vertexSource, fragmentSource);
     }
 
     void Shader::setUniform(const std::string &name, const sf::Glsl::Vec4 &vector)
