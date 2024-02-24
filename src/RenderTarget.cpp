@@ -50,7 +50,7 @@ sf::Uint32 factorToGlConstant(sf::BlendMode::Factor blendFactor)
 
 namespace sfcg
 {
-    RenderTarget::RenderTarget() : m_vao(0), m_defaultView(), m_view(m_defaultView)
+    RenderTarget::RenderTarget() : m_vao(0), m_defaultView(), m_view()
     {
     }
 

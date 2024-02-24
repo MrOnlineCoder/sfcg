@@ -23,13 +23,17 @@ I wanted to make an educational 3D pet-project with modern (core) OpenGL using S
 
 AFAIK, SFML does not plan to switch to modern OpenGL in upcoming release of 3.0.0, and high chances that we will not see SFML 4.0+ for another decade or so 😁. This project should not be regarded as contribution to main FML codebase, this is mostly personal-use low-quality code project 😁
 
+## Installing
+
+You can either build the library using CMake and link against it, or just include the source code in your project.
+
 ## How to use
 
 **Most of APIs from SFML have 1-1 mapping, just change the namespace from `sf::` to `sfcg::`.**
 
 Please note, not all classes or definitions were re-implemented, some SFML classes are completely good or independent of OpenGL context version, like `sf::Vertex` or `sf::Vector2f`. Therefore, they are not included in this library and `sfcg` is still dependent on `sfml-graphics`, so do not forget to link against it.
 
-1. Add the library to your project (for now it has to be built manually, will be fixed later)
+1. Add the library to your project
 2. Include the header file: `#include <sfcg/SFCG.hpp>`, which will include all the necessary headers (or include them separately)
 3. Create a RenderWindow with context settings, that will enable OpenGL Core profile, for example like this:
 
@@ -148,7 +152,7 @@ If you want to use your own shaders, you can modify the `sfcg::RenderStates` obj
 - [x] `sf::ConvexShape -> sfcg::ConvexShape`
 - [ ] Switching between different render targets
 - [ ] Caching of render states/objects in RenderTarget
-- [ ] Fix CMake config, so the library can be distributed easily
+- [x] Fix CMake config, so the library can be distributed easily
 - [ ] Add in-code documentation with SFML style
 - [ ] Solve outlines issue (either fix the transformations or use vertex buffers)\
 - [ ] Solve context-safety for `sfcg::GeometryCache`

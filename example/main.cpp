@@ -5,8 +5,6 @@
 
 #include <sfcg/SFCG.hpp>
 
-#include <SFML/Graphics.hpp>
-
 int main()
 {
     // Request modern OpenGL context

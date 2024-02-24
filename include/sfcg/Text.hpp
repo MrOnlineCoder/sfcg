@@ -4,7 +4,7 @@
 #include <string>
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics/Font.hpp>
-
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
 #include <sfcg/Drawable.hpp>
