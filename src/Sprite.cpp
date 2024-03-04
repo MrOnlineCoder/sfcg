@@ -28,15 +28,17 @@ namespace sfcg
 
     void Sprite::setTexture(const sf::Texture &texture, bool resetRect)
     {
+        bool hadTextureBefore = m_texture != nullptr;
+
+        // Assign the new texture
+        m_texture = &texture;
+
         // Recompute the texture area if requested, or if there was no valid texture & rect before
-        if (resetRect || (!m_texture && (m_textureRect == sf::IntRect())))
+        if (resetRect || (!hadTextureBefore && (m_textureRect == sf::IntRect())))
         {
             sf::Vector2i size = sf::Vector2i(texture.getSize());
             setTextureRect(sf::IntRect(0, 0, size.x, size.y));
         }
-
-        // Assign the new texture
-        m_texture = &texture;
     }
 
     void Sprite::setTextureRect(const sf::IntRect &rectangle)
